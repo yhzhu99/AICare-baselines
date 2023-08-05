@@ -662,33 +662,18 @@ class ConCare(nn.Module):
         """
         # rnn will only apply dropout between layers
         batch_size, time_steps, _ = x.size()
-        out = torch.zeros((batch_size, time_steps, self.hidden_dim))
-        decov_loss = 0
-        for cur_time in range(time_steps):
-            cur_x = x[:, :cur_time+1, :]
-            cur_mask = mask[:, :cur_time+1]
-            cur_out, decov = self.concare_layer(cur_x, static, cur_mask)
-            out[:, cur_time, :] = cur_out
-            decov_loss += decov
-        decov_loss /= time_steps
+        # out = torch.zeros((batch_size, time_steps, self.hidden_dim))
+        # decov_loss = 0
+        # for cur_time in range(time_steps):
+        #     cur_x = x[:, :cur_time+1, :]
+        #     cur_mask = mask[:, :cur_time+1]
+        #     cur_out, decov = self.concare_layer(cur_x, static, cur_mask)
+        #     out[:, cur_time, :] = cur_out
+        #     decov_loss += decov
+        # decov_loss /= time_steps
+        # out = self.dropout(out)
+        # return out, decov_loss
+        out, decov_loss = self.concare_layer(x, static, mask)
+        decov_loss = decov_loss / time_steps
         out = self.dropout(out)
         return out, decov_loss
-
-
-if __name__ == "__main__":
-    bs = 3
-    max_len = 13
-    lab_dim = 73
-    demo_dim = 2
-    hidden_dim = 128
-    lab = torch.randn([bs, max_len, lab_dim])
-    static = torch.randn([bs, demo_dim])
-    lens = torch.tensor([max_len , 2, 9])
-    mask = generate_mask(lens)
-    model = ConCare(lab_dim, demo_dim, hidden_dim, 4, 325, 0.5)
-    out, decov_loss  = model(lab, static, mask)
-    print(out.shape)
-    # x = torch.randn(2, 13, 75)
-    # lens = torch.tensor([13,2])
-    # x_lab, x_demo, mask = x[:, 0, :2], x[:, :, 2:], generate_mask(lens)
-    # print(x_lab.shape, x_demo.shape, mask.shape)
