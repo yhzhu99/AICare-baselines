@@ -1,6 +1,6 @@
 import torch
 from torch.nn.utils.rnn import unpad_sequence
-
+import numpy as np
 
 def unpad_y(y_pred, y_true, lens):
     raw_device = y_pred.device
@@ -20,7 +20,7 @@ def unpad_batch(x, y, lens):
     y = y.detach().cpu()
     lens = lens.detach().cpu()
     x_unpad = unpad_sequence(x, batch_first=True, lengths=lens)
-    x_stack = torch.vstack(x_unpad).squeeze(dim=-1)
+    x_last = np.array([x[-1] for x in x_unpad])
     y_unpad = unpad_sequence(y, batch_first=True, lengths=lens)
-    y_stack = torch.vstack(y_unpad).squeeze(dim=-1)
-    return x_stack.numpy(), y_stack.numpy()
+    y_last = np.array([y[-1] for y in y_unpad])
+    return x_last, y_last
