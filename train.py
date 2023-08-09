@@ -58,7 +58,7 @@ if __name__ == "__main__":
     best_hparams = hparams # [TO-SPECIFY]
     for i in range(len(best_hparams)):
         config = best_hparams[i]
-        run_func = run_ml_experiment if config["model"] in ["RF", "DT", "GBDT", "XGBoost", "CatBoost"] else run_dl_experiment
+        run_func = run_ml_experiment if config["model"] in ["RF", "DT", "GBDT", "XGBoost", "CatBoost", "LR", "LightGBM"] else run_dl_experiment
         seeds = [0]
         folds = [0]
         for fold in folds:
