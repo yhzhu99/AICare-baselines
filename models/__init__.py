@@ -20,3 +20,4 @@ from .tcn import TCN
 from .transformer import Transformer
 from .mcgru import MCGRU
 from .xgboost import XGBoost  # ML model
+from .mt_rhn import MTRHN
