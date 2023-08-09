@@ -443,7 +443,7 @@ class AICare(nn.Module):
         combined_hidden = torch.cat((weighted_contexts, \
                                      demo_main.squeeze(1)),-1)#b n h
         out = self.output_proj(combined_hidden)
-        out = self.dropout(out)
+        # out = self.dropout(out)
         # output = self.output(self.dropout(combined_hidden))# b 1
         # output = self.sigmoid(output)
         # return output
