@@ -416,7 +416,7 @@ class AICare(nn.Module):
         self.sigmoid = nn.Sigmoid()
         self.relu=nn.ReLU()
 
-    def forward(self, input, demo_input, **kwargs):
+    def forward(self, input, demo_input, mask, **kwargs):
         # input shape [batch_size, timestep, feature_dim]
         demo_main = self.tanh(self.demo_proj_main(demo_input)).unsqueeze(1)# b hidden_dim
         
@@ -426,11 +426,12 @@ class AICare(nn.Module):
         assert(feature_dim == self.lab_dim)# input Tensor : 256 * 48 * 76
         assert(self.d_model % self.MHD_num_head == 0)
 
-        
-        GRU_embeded_input = torch.sum(self.GRUs[0](input[:,:,0].unsqueeze(-1))[1], 0).squeeze().unsqueeze(1) # b 1 h
+        lens = mask.sum(dim=1)
+
+        GRU_embeded_input = torch.sum(self.GRUs[0](pack_padded_sequence(input[:,:,0].unsqueeze(-1), lens.cpu(), batch_first=True, enforce_sorted=False))[1], 0).squeeze().unsqueeze(1) # b 1 h
 #         print(GRU_embeded_input.shape)
         for i in range(feature_dim-1):
-            embeded_input = torch.sum(self.GRUs[i+1](input[:,:,i+1].unsqueeze(-1))[1], 0).squeeze().unsqueeze(1)  # b 1 h
+            embeded_input = torch.sum(self.GRUs[i+1](pack_padded_sequence(input[:,:,i+1].unsqueeze(-1), lens.cpu(), batch_first=True, enforce_sorted=False))[1], 0).squeeze().unsqueeze(1)  # b 1 h
             GRU_embeded_input = torch.cat((GRU_embeded_input, embeded_input), 1)
 
 #         print(demo_main.shape)
@@ -442,6 +443,7 @@ class AICare(nn.Module):
         combined_hidden = torch.cat((weighted_contexts, \
                                      demo_main.squeeze(1)),-1)#b n h
         out = self.output_proj(combined_hidden)
+        out = self.dropout(out)
         # output = self.output(self.dropout(combined_hidden))# b 1
         # output = self.sigmoid(output)
         # return output
