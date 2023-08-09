@@ -55,26 +55,15 @@ class DlPipeline(L.LightningModule):
             self.embedding = embedding
             y_hat = self.head(embedding)
             return y_hat, embedding, decov_loss
-        elif self.model_name in ["GRASP", "Agent", "AICare"]:
+        elif self.model_name in ["GRASP", "Agent", "AICare", "MCGRU"]:
             x_demo, x_lab, mask = x[:, 0, :self.demo_dim], x[:, :, self.demo_dim:], generate_mask(lens)
             embedding = self.ehr_encoder(x_lab, x_demo, mask).to(x.device)
             self.embedding = embedding
             y_hat = self.head(embedding)
             return y_hat, embedding
-        elif self.model_name in ["AdaCare", "RETAIN", "TCN", "Transformer", "StageNet", "BiLSTM", "GRU"]:
+        elif self.model_name in ["AdaCare", "RETAIN", "TCN", "Transformer", "StageNet", "BiLSTM", "GRU", "LSTM", "RNN", "MLP", "GRUAttention"]:
             mask = generate_mask(lens)
             embedding = self.ehr_encoder(x, mask).to(x.device)
-            self.embedding = embedding
-            y_hat = self.head(embedding)
-            return y_hat, embedding
-        elif self.model_name in ["LSTM", "RNN", "MLP", "GRUAttention"]:
-            embedding = self.ehr_encoder(x).to(x.device)
-            self.embedding = embedding
-            y_hat = self.head(embedding)
-            return y_hat, embedding
-        elif self.model_name in ["MCGRU"]:
-            x_demo, x_lab = x[:, 0, :self.demo_dim], x[:, :, self.demo_dim:]
-            embedding = self.ehr_encoder(x_lab, x_demo).to(x.device)
             self.embedding = embedding
             y_hat = self.head(embedding)
             return y_hat, embedding

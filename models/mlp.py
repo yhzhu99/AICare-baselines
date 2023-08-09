@@ -1,4 +1,5 @@
 from torch import nn
+from models.utils import get_last_visit
 
 
 class MLP(nn.Module):
@@ -15,8 +16,10 @@ class MLP(nn.Module):
             nn.Linear(4 * hidden_dim, hidden_dim),
         )
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, mask, **kwargs):
         x = self.proj(x)
         x = self.mlp(x)
         # return x
-        return x[:, -1, :]
+        # return x[:, -1, :]
+        out = get_last_visit(x, mask)
+        return out

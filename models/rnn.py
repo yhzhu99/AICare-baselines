@@ -4,6 +4,8 @@ import torch
 import torch.nn as nn
 import torch.nn.utils.rnn as rnn_utils
 
+from models.utils import get_last_visit
+
 
 class RNNLayer(nn.Module):
     def __init__(
@@ -92,8 +94,9 @@ class RNN(nn.Module):
         self.act = act_layer()
         self.rnn = nn.RNN(input_size=input_dim, hidden_size=hidden_dim, num_layers=1, batch_first=True)
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, mask, **kwargs):
         # x, _ = self.rnn(x)
         # return x
-        _, x = self.rnn(x)
-        return x[0, :, :]
+        output, _ = self.rnn(x)
+        out = get_last_visit(output, mask)
+        return out

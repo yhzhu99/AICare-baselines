@@ -1,6 +1,9 @@
 import torch
 from torch import nn
 
+from models.utils import get_last_visit
+
+
 class MCGRU(nn.Module):
     def __init__(self, lab_dim, demo_dim, hidden_dim: int=32, feat_dim: int=8, act_layer=nn.GELU, drop=0.0, **kwargs):
         super().__init__()
@@ -19,7 +22,7 @@ class MCGRU(nn.Module):
         )
         self.out_proj = nn.Linear(lab_dim*feat_dim+hidden_dim, hidden_dim)
         self.dropout = nn.Dropout(drop)
-    def forward(self, x, static, **kwargs):
+    def forward(self, x, static, mask, **kwargs):
         # x: [bs, time_steps, lab_dim]
         # static: [bs, demo_dim]
         bs, time_steps, lab_dim = x.shape
@@ -34,5 +37,6 @@ class MCGRU(nn.Module):
         # concat demo and out
         out = torch.cat([demo.unsqueeze(1).repeat(1, time_steps, 1), out], dim=-1)
         out = self.out_proj(out)
-        # return out
-        return out[:, -1, :]
+
+        out = get_last_visit(out, mask)
+        return out
