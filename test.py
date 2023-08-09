@@ -1,3 +1,5 @@
+import os
+
 import lightning as L
 import pandas as pd
 
@@ -6,6 +8,15 @@ from configs.ml import ml_best_hparams
 from datasets.loader.datamodule import EhrDataModule
 from datasets.loader.load_los_info import get_los_info
 from pipelines import DlPipeline, MlPipeline
+
+def get_latest_file(path):
+    # Get list of all files in the directory
+    files = [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    
+    # Get the file with the latest modification time
+    latest_file = max(files, key=os.path.getctime)
+    
+    return latest_file
 
 def run_ml_experiment(config):
     los_config = get_los_info(f'datasets/{config["dataset"]}/processed/fold_{config["fold"]}')
@@ -26,9 +37,15 @@ def run_dl_experiment(config):
     # data
     dm = EhrDataModule(f'datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
     # checkpoint
-    checkpoint_path = f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}/checkpoints/best.ckpt'
+    # checkpoint_path = f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}/checkpoints/best.ckpt'
+
+    checkpoint_path = get_latest_file(f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}/checkpoints')
+
+    print("checkpoint_path: ", checkpoint_path)
+
     if "time_aware" in config and config["time_aware"] == True:
-        checkpoint_path = f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}-ta/checkpoints/best.ckpt' # time-aware loss applied
+        checkpoint_path = f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}-ta/checkpoints/best.ckpt'
+
     # train/val/test
     pipeline = DlPipeline(config)
     trainer = L.Trainer(accelerator="cpu", max_epochs=1, logger=False, num_sanity_val_steps=0)
@@ -44,9 +61,8 @@ if __name__ == "__main__":
         config = best_hparams[i]
         print(f"Testing... {i}/{len(best_hparams)}")
         run_func = run_ml_experiment if config["model"] in ["RF", "DT", "GBDT", "XGBoost", "CatBoost"] else run_dl_experiment
-        if config["dataset"] in ["mimic-iii", "mimic-iv"]:
-            seeds = [0,1,2,3,4]
-            folds = [0]
+        seeds = [0]
+        folds = [0]
         for fold in folds:
             config["fold"] = fold
             for seed in seeds:
