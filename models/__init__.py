@@ -22,3 +22,4 @@ from .mcgru import MCGRU
 from .xgboost import XGBoost  # ML model
 from .mt_rhn import MTRHN
 from .lr import LR  # ML model
+from .lightgbm import LightGBM  # ML model
