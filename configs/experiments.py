@@ -1,0 +1,25 @@
+hparams = [
+    {'model': 'MCGRU',
+        'dataset': 'challenge2012',
+        'task': 'outcome',
+        'epochs': 50,
+        'patience': 10,
+        'batch_size': 1024,
+        'learning_rate': 0.001,
+        'main_metric': 'auprc',
+        'demo_dim': 5,
+        'lab_dim': 35,
+        'hidden_dim': 128,
+        'output_dim': 1
+    },
+    # {
+    #     "model": "CatBoost",
+    #     "dataset": "challenge2012",
+    #     "task": "outcome",
+    #     "max_depth": 5,
+    #     "n_estimators": 100,
+    #     "learning_rate": 0.1,
+    #     "batch_size": 81920,
+    #     "main_metric": "auprc",
+    # },
+]

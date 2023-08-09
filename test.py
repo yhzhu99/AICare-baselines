@@ -3,8 +3,7 @@ import os
 import lightning as L
 import pandas as pd
 
-from configs.dl import dl_best_hparams
-from configs.ml import ml_best_hparams
+from configs.experiments import hparams
 from datasets.loader.datamodule import EhrDataModule
 from datasets.loader.load_los_info import get_los_info
 from pipelines import DlPipeline, MlPipeline
@@ -54,7 +53,7 @@ def run_dl_experiment(config):
     return perf
 
 if __name__ == "__main__":
-    best_hparams = dl_best_hparams # [TO-SPECIFY]
+    best_hparams = hparams # [TO-SPECIFY]
     performance_table = {'dataset':[], 'task': [], 'model': [], 'fold': [], 'seed': [], 'accuracy': [], 'auroc': [], 'auprc': [], 'f1': [], 'minpse': []}
     for i in range(0, len(best_hparams)):
     # for i in range(0, 1):
