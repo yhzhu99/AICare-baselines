@@ -11,7 +11,6 @@ class LR():
         task = params['task']
         self.task = task
         seed = params['seed']
-        max_depth = params['max_depth']
         if task == "outcome":
             self.model = LogisticRegression(random_state=seed, max_iter=200)
         elif task == "los":
