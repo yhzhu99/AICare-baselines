@@ -36,11 +36,11 @@ class DlPipeline(L.LightningModule):
         model_class = getattr(models, self.model_name)
         self.ehr_encoder = model_class(**config)
         if self.task == "outcome":
-            self.head = nn.Sequential(nn.Linear(self.hidden_dim, self.output_dim), nn.Dropout(0.5), nn.Sigmoid())
+            self.head = nn.Sequential(nn.Linear(self.hidden_dim, self.output_dim), nn.Dropout(0.0), nn.Sigmoid())
         elif self.task == "los":
-            self.head = nn.Sequential(nn.Linear(self.hidden_dim, self.output_dim), nn.Dropout(0.5))
+            self.head = nn.Sequential(nn.Linear(self.hidden_dim, self.output_dim), nn.Dropout(0.0))
         elif self.task == "multitask":
-            self.head = models.heads.MultitaskHead(self.hidden_dim, self.output_dim, drop=0.5)
+            self.head = models.heads.MultitaskHead(self.hidden_dim, self.output_dim, drop=0.0)
 
         self.validation_step_outputs = []
         self.test_step_outputs = []
