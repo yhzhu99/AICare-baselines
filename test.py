@@ -85,4 +85,4 @@ if __name__ == "__main__":
                     performance_table['auprc'].append(perf['auprc'])
                     performance_table['f1'].append(perf['f1'])
                     performance_table['minpse'].append(perf['minpse'])
-    pd.DataFrame(performance_table).to_csv('perf_experiments.csv', index=False) # [TO-SPECIFY]
+    pd.DataFrame(performance_table).to_csv('mimic_ml_perf.csv', index=False) # [TO-SPECIFY]
