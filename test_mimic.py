@@ -3,7 +3,7 @@ import os
 import lightning as L
 import pandas as pd
 
-from configs.experiments import hparams
+from configs.experiments_mimic import hparams
 from datasets.loader.datamodule import EhrDataModule
 from datasets.loader.load_los_info import get_los_info
 from pipelines import DlPipeline, MlPipeline
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         config = best_hparams[i]
         print(f"Testing... {i}/{len(best_hparams)}")
         run_func = run_ml_experiment if config["model"] in ["RF", "DT", "GBDT", "XGBoost", "CatBoost", "LR", "LightGBM"] else run_dl_experiment
-        seeds = [0]
+        seeds = [0,1,2,3,4]
         folds = [0]
         for fold in folds:
             config["fold"] = fold
