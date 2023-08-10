@@ -3,7 +3,8 @@ import os
 import lightning as L
 import pandas as pd
 
-from configs.experiments_mimic import hparams
+# from configs.experiments_mimic import hparams
+from configs.experiments_challenge import hparams
 from datasets.loader.datamodule import EhrDataModule
 from datasets.loader.load_los_info import get_los_info
 from pipelines import DlPipeline, MlPipeline
@@ -85,4 +86,4 @@ if __name__ == "__main__":
                     performance_table['auprc'].append(perf['auprc'])
                     performance_table['f1'].append(perf['f1'])
                     performance_table['minpse'].append(perf['minpse'])
-    pd.DataFrame(performance_table).to_csv('mimic_ml_perf.csv', index=False) # [TO-SPECIFY]
+    pd.DataFrame(performance_table).to_csv('challenge_perf.csv', index=False) # [TO-SPECIFY]

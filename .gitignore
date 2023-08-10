@@ -10,6 +10,8 @@ logs/
 checkpoints/
 wandb/
 lightning_logs/
+challenge/
+challenge2012/
 
 #########################################
 

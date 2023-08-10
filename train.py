@@ -2,7 +2,8 @@ import lightning as L
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from lightning.pytorch.loggers import CSVLogger
 
-from configs.experiments_mimic import hparams
+# from configs.experiments_mimic import hparams
+from configs.experiments_challenge import hparams
 from datasets.loader.datamodule import EhrDataModule
 from datasets.loader.load_los_info import get_los_info
 from pipelines import DlPipeline, MlPipeline
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     for i in range(len(best_hparams)):
         config = best_hparams[i]
         run_func = run_ml_experiment if config["model"] in ["RF", "DT", "GBDT", "XGBoost", "CatBoost", "LR", "LightGBM"] else run_dl_experiment
-        seeds = [0,1,2,3,4]
+        seeds = [0,1,2,3,4] # [0,1,2,3,4]
         folds = [0]
         for fold in folds:
             config["fold"] = fold
