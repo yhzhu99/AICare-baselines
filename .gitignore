@@ -12,6 +12,8 @@ wandb/
 lightning_logs/
 challenge/
 challenge2012/
+datasets/challenge
+datasets/challenge2012
 
 #########################################
 
